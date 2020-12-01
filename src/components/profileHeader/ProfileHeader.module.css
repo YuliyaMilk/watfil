@@ -1,0 +1,28 @@
+.ProfileHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+}
+
+.Name {
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.Name:hover {
+  color: #5264ae;
+}
+
+.SignOut {
+  border: 2px solid white;
+  border-radius: 100px;
+  padding: 5px;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+.SignOut:hover {
+  color: #5264ae;
+  border-color: #5264ae;
+}

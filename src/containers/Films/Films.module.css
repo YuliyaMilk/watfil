@@ -1,0 +1,21 @@
+.Films {
+    display: flex;
+    margin: auto;
+    height: 100%;
+    width: 90%;
+    margin-top: 30px;
+    justify-content: space-between;
+}
+
+.FilmCards {
+    width: 60%;
+    min-width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.Filters {
+    width: 30%;
+    height: 72vh;
+}

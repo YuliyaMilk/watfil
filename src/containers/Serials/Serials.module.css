@@ -1,0 +1,21 @@
+.Serials {
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    height: 100%;
+    width: 90%;
+    margin-top: 30px;
+}
+
+.SerialsCard {
+    width: 60%;
+    display: flex;
+    min-width: 60%;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.Filters {
+    width: 30%;
+    height: 72vh;
+}

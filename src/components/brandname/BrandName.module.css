@@ -1,0 +1,8 @@
+.BrandName {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 2.5em;
+  color: #fff;
+  cursor: pointer;
+}
