@@ -11,7 +11,7 @@
 }
 
 .Name:hover {
-  color: #5264ae;
+  color: #ffda00;
 }
 
 .SignOut {
@@ -23,6 +23,6 @@
 }
 
 .SignOut:hover {
-  color: #5264ae;
-  border-color: #5264ae;
+  color:#ffda00;
+  border-color: #ffda00;
 }

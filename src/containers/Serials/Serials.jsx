@@ -1,7 +1,5 @@
 import classes from "./Serials.module.css";
 import React from "react";
-import { NavLink } from "react-router-dom";
-import MainPage from "../MainPage/MainPage";
 import Card from "../../components/UI/Card/Card";
 import Filter from "../../components/filter/Filter";
 import Axios from "axios";
@@ -10,22 +8,57 @@ class Serials extends React.Component {
   state = {
     serials: [],
     genres: [],
+    favorites: [],
   };
 
   addGenre = async (id) => {
     await this.setState({
       genres: [...this.state.genres, id],
     });
-    console.log(this.state.genres);
   };
 
   deleteGenre = async (id) => {
     let newGenres = this.state.genres.slice();
-    newGenres.splice(this.state.genres.indexOf(id));
+    newGenres.splice(this.state.genres.indexOf(id), 1);
     await this.setState({
       genres: newGenres,
     });
-    console.log(this.state.genres);
+  };
+
+  addFavorite = async (favoriteId, isFav) => {
+    if (isFav) {
+      let response = await Axios.post(
+        "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/addfavorite",
+        {
+          email: localStorage.getItem("email"),
+          movie_id: favoriteId,
+          movie: false,
+        }
+      );
+      response = JSON.parse(response.data);
+      if (response.status === "success") {
+        this.setState({
+          favorites: [...this.state.favorites, favoriteId],
+        });
+      }
+    } else {
+      let response = await Axios.post(
+        "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/deletefavorite",
+        {
+          email: localStorage.getItem("email"),
+          movie_id: favoriteId,
+          movie: false
+        }
+      );
+      response = JSON.parse(response.data);
+      if (response.status === "success") {
+        let newFav = this.state.favorites.slice();
+        newFav.splice(this.state.favorites.indexOf(favoriteId), 1);
+        this.setState({
+          favorites: newFav,
+        });
+      }
+    }
   };
 
   async componentDidMount() {
@@ -38,6 +71,25 @@ class Serials extends React.Component {
       ).data.results;
       this.setState({
         serials: [...this.state.serials, ...res],
+      });
+    }
+
+    let fav = await Axios.get(
+      "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/fetchfavorites"
+    );
+    fav = JSON.parse(fav.data);
+    if (fav.status === "success") {
+      let curFav = [];
+      fav.data.map((item) => {
+        if (
+          item.user_primary === localStorage.getItem("email") &&
+          !item.movie
+        ) {
+          curFav.push(parseInt(item.movie_id));
+        }
+      });
+      this.setState({
+        favorites: [...this.state.favorites, ...curFav],
       });
     }
   }
@@ -58,11 +110,15 @@ class Serials extends React.Component {
               return (
                 <Card
                   key={serial.id}
+                  id={serial.id}
                   title={serial.name}
+                  isMovie = {false}
                   overview={serial.overview}
+                  favorite={this.state.favorites.indexOf(serial.id) !== -1}
                   poster={
                     "https://image.tmdb.org/t/p/w500" + serial.poster_path
                   }
+                  addFavorite={this.addFavorite}
                 />
               );
             }

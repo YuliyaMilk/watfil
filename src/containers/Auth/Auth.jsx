@@ -9,6 +9,7 @@ class Auth extends React.Component {
     password: "",
     nickname: "",
     signIn: true,
+    error: null
   };
 
   submitHandler = (event) => {
@@ -49,10 +50,11 @@ class Auth extends React.Component {
     );
     if (response) {
       response = JSON.parse(response.data);
-      console.log(response);
-      if (response.status === "success") this.props.signIn();
+      if (response.status === "success") this.props.signIn(response.data);
       else if (response.status === "error") {
-        console.log("ERROR: ", response.data);
+        this.setState({
+          error: response.data
+        })
       }
     }
   };
@@ -68,9 +70,11 @@ class Auth extends React.Component {
     );
     if (response) {
       response = JSON.parse(response.data);
-      if (response.status === "success") this.props.signIn();
+      if (response.status === "success") this.props.signIn(response.data);
       else if (response.status === "error") {
-        console.log("ERROR: ", response.data);
+        this.setState({
+          error: response.data
+        })
       }
     }
   };
@@ -94,7 +98,8 @@ class Auth extends React.Component {
                 value={this.state.password}
                 onPasswordChange={this.onPasswordChange}
               />
-              <Input type="submit" name="SignIn" sign={this.loginHandler} />
+              {this.state.error ? <div className = {classes.Error}>{this.state.error}</div>: null}
+              <Input type="submit" name="Sign in" sign={this.loginHandler} />
               <div className={classes.SignButton} onClick={this.changeSignIn}>
                 Регистрация
               </div>
@@ -119,7 +124,8 @@ class Auth extends React.Component {
                 value={this.state.password}
                 onPasswordChange={this.onPasswordChange}
               />
-              <Input type="submit" name="SignUp" sign={this.registerHandler} />
+              {this.state.error ? <div className = {classes.Error}>{this.state.error}</div>: null}
+              <Input type="submit" name="Sign up" sign={this.registerHandler} />
               <div className={classes.SignButton} onClick={this.changeSignIn}>
                 Вход
               </div>

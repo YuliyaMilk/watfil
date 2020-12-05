@@ -1,0 +1,11 @@
+.Favorite{
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-around;
+    height: 100%;
+    width: 100%;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    padding: 30px;
+    margin-bottom: 100px;
+}

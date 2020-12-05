@@ -22,11 +22,17 @@
 
 .Menu ul li a {
   text-decoration: none;
-  color: white;
   font-size: 1.2em;
 }
 
 .Menu ul li a:hover {
-  text-decoration: none;
-  color: #5264ae;
+  color: #ffda00;
+}
+
+.simple a {
+  color: white;
+}
+
+.active a{
+  color: #ffda00;
 }

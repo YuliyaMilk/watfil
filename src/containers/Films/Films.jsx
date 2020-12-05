@@ -1,7 +1,5 @@
 import classes from "./Films.module.css";
 import React from "react";
-import { NavLink } from "react-router-dom";
-import MainPage from "../MainPage/MainPage";
 import Card from "../../components/UI/Card/Card";
 import Filter from "../../components/filter/Filter";
 import Axios from "axios";
@@ -10,6 +8,7 @@ class Films extends React.Component {
   state = {
     films: [],
     genres: [],
+    favorites: [],
   };
 
   addGenre = async (id) => {
@@ -20,10 +19,47 @@ class Films extends React.Component {
 
   deleteGenre = async (id) => {
     let newGenres = this.state.genres.slice();
-    newGenres.splice(this.state.genres.indexOf(id));
+    newGenres.splice(this.state.genres.indexOf(id), 1);
     await this.setState({
       genres: newGenres,
     });
+  };
+
+  addFavorite = async (favoriteId, isFav) => {
+    if (isFav) {
+      let response = await Axios.post(
+        "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/addfavorite",
+        {
+          email: localStorage.getItem("email"),
+          movie_id: favoriteId,
+          movie: true,
+        }
+      );
+      response = JSON.parse(response.data);
+      if (response.status === "success") {
+        this.setState({
+          favorites: [...this.state.favorites, favoriteId],
+        });
+      }
+    }
+    else {
+      let response = await Axios.post(
+        "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/deletefavorite",
+        {
+          email: localStorage.getItem("email"),
+          movie_id: favoriteId,
+          movie: true
+        }
+      );
+      response = JSON.parse(response.data);
+      if (response.status === "success") {
+        let newFav = this.state.favorites.slice();
+        newFav.splice(this.state.favorites.indexOf(favoriteId), 1);
+        this.setState({
+          favorites: newFav,
+        });
+      }
+    }
   };
 
   async componentDidMount() {
@@ -38,42 +74,60 @@ class Films extends React.Component {
         films: [...this.state.films, ...res],
       });
     }
+
+    let fav = await Axios.get(
+      "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/fetchfavorites"
+    );
+    fav = JSON.parse(fav.data);
+    if (fav.status === "success") {
+      let curFav = [];
+      fav.data.map((item) => {
+        if (item.user_primary === localStorage.getItem("email") && item.movie) {
+          curFav.push(parseInt(item.movie_id));
+        }
+      });
+      this.setState({
+        favorites: [...this.state.favorites, ...curFav],
+      });
+    }
   }
 
   render() {
     return (
-        <div className={classes.Films}>
-          <div className={classes.FilmCards}>
+      <div className={classes.Films}>
+        <div className={classes.FilmCards}>
           {this.state.films.map((film) => {
-              let isGood = true;
-              for (const genre of this.state.genres) {
-                if (film.genre_ids.indexOf(genre) === -1) {
-                  isGood = false;
-                  break;
-                }
+            let isGood = true;
+            for (const genre of this.state.genres) {
+              if (film.genre_ids.indexOf(genre) === -1) {
+                isGood = false;
+                break;
               }
-              if (isGood) {
-                return (
-                  <Card
-                    key={film.id}
-                    title={film.title}
-                    overview={film.overview}
-                    poster={
-                      "https://image.tmdb.org/t/p/w500" + film.poster_path
-                    }
-                  />
-                );
-              }
-            })}
-          </div>
-          <div className={classes.Filters}>
-            <Filter
-              genres={this.state.genres}
-              addGenre={this.addGenre}
-              deleteGenre={this.deleteGenre}
-            />
-          </div>
+            }
+            if (isGood) {
+              return (
+                <Card
+                  key={film.id}
+                  id={film.id}
+                  title={film.title}
+                  overview={film.overview}
+                  isMovie = {true}
+                  favorite={this.state.favorites.indexOf(film.id) !== -1}
+                  addFavorite={this.addFavorite}
+                  poster={"https://image.tmdb.org/t/p/w500" + film.poster_path}
+                />
+              );
+            }
+          })}
         </div>
+        <div className={classes.Filters}>
+          <Filter
+            genres={this.state.genres}
+            addGenre={this.addGenre}
+            deleteGenre={this.deleteGenre}
+          />
+        </div>
+      </div>
     );
   }
 }

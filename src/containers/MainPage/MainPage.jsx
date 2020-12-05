@@ -7,7 +7,7 @@ class MainPage extends React.Component {
   render() {
     return (
       <div className={classes.MainPage}>
-        <Header signOut = {this.props.signOut}/>
+        <Header signOut = {this.props.signOut} name = {this.props.user.nickname}/>
         {this.props.children}
       </div>
     );

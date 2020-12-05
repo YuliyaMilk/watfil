@@ -8,7 +8,7 @@
 .AuthForm {
   box-sizing: border-box;
   width: 30%;
-  height: 55%;
+  height: 65%;
   margin: 100px auto 0 auto;
   background: #fff;
   border-radius: 4px;
@@ -42,5 +42,10 @@
 }
 
 .SignButton:hover {
-  color: rgb(207, 177, 5);
+  color: #ffda00;
+}
+
+.Error {
+  color: red;
+  margin-bottom: 15px;
 }
