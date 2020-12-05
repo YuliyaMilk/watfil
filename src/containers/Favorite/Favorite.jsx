@@ -9,6 +9,8 @@ class Favorite extends React.Component {
     cards: []
   }
 
+  _isMounted = false;
+
   deleteFavorite = async(favoriteId, isMovie) => {
     let response = await Axios.post(
       "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/deletefavorite",
@@ -27,13 +29,14 @@ class Favorite extends React.Component {
           break;
         }
       }
-      this.setState({
+      this._isMounted && this.setState({
         cards: newFav,
       });
     }
   }
 
   async componentDidMount() {
+    this._isMounted = true;
     let fav = await Axios.get(
       "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/fetchfavorites");
     fav = JSON.parse(fav.data);
@@ -56,10 +59,14 @@ class Favorite extends React.Component {
           )
         }
       };
-      this.setState({
+      this._isMounted && this.setState({
         cards: cardsArr
       });
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {

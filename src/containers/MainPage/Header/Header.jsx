@@ -27,7 +27,7 @@ class Header extends React.Component {
     }
     else {
       this.setState({
-        activePage: location === 'serials' ? 0 : location === 'films' ? 1 : 2
+        activePage: location === 'serials' ? 0 : location === 'films' ? 1 : location === 'favorite' ? 2 : -1
       })
     }
   }
