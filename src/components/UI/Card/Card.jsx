@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 import classes from "./Card.module.css";
+import React from "react";
 
 const Card = (props) => {
   return (
     <div className={classes.Card} style = {props.style}>
       <div className={classes.Image}>
         <img
-          src={props.poster}
-          style={{ height: "100%" }}
-        ></img>
+            src={props.poster}
+            style={{height: "100%"}}
+            alt="poster"/>
       </div>
       <div className={classes.Information}>
         <div className={classes.Title} style = {{'fontSize': props.titleFont}}>
@@ -23,15 +24,15 @@ const Card = (props) => {
             }
             }>
             {props.favorite ? (
-              <i className="fa fa-star" aria-hidden="true" style = {{'color': '#ffda00'}}></i>
+              <i className="fa fa-star" aria-hidden="true" style = {{'color': '#ffda00'}}/>
             ) : (
-              <i className="fa fa-star-o" aria-hidden="true"></i>
+              <i className="fa fa-star-o" aria-hidden="true"/>
             )}
           </div>
         </div>
         <div className={classes.Description} style = {{'fontSize': props.descriptionFont}}>{props.overview}</div>
         <Link to = {{
-          pathname: '/' + props.id,
+          pathname: 'filminfo/' + props.id,
           state: {
             isMovie: props.isMovie,
             id: props.id

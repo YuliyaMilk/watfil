@@ -1,16 +1,18 @@
 .FilmInfo {
+    margin-top: 28px;
     width: 90%;
     height: 100%;
     background: black;
     margin-left: auto;
     margin-right: auto;
     color: white;
-    min-height: 700px;
+    min-height: 720px;
 }
 
 .Page {
     display: flex;
     justify-content: flex-start;
+    
     height: 100%;
     padding-top: 50px;
 }
@@ -58,4 +60,12 @@
  .Release {
     margin-top: 15px;
     font-size: 1.1em;
+ }
+
+ .SliderAuto {
+     
+ }
+
+ .BlackBackground {
+     background: black;
  }

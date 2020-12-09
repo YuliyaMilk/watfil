@@ -1,6 +1,7 @@
 import classes from "./FilmInfo.module.css";
 import React from "react";
 import Axios from "axios";
+import SliderAuto from "../../components/slider/SliderAuto";
 
 class FilmInfo extends React.Component {
   film = null;
@@ -14,8 +15,13 @@ class FilmInfo extends React.Component {
 
   async componentDidMount() {
     this._isMounted = true;
-    this.id = this.props.location.state.id;
-    this.isMovie = this.props.location.state.isMovie;
+    if(this.props.location.state) {
+      this.id = this.props.location.state.id;
+      this.isMovie = this.props.location.state.isMovie;
+    }else{
+      this.id = this.props.location.pathname.slice(10);
+      this.isMovie = true;
+    }
     if (this.isMovie) {
       this.film = await Axios.get(
         "https://api.themoviedb.org/3/movie/" +
@@ -23,7 +29,7 @@ class FilmInfo extends React.Component {
           "?api_key=623a2eda649fb02dee401196f0a282c9&language=ru"
       );
       this.videoKey = 
-      (await Axios.get( "https://api.themoviedb.org/3/movie/"+this.id+"/videos?api_key=623a2eda649fb02dee401196f0a282c9&language=en")).data.results[0].key
+      (await Axios.get( "https://api.themoviedb.org/3/movie/"+this.id+"/videos?api_key=623a2eda649fb02dee401196f0a282c9&language=en")).data.results
     
     } else {
       this.film = await Axios.get(
@@ -32,7 +38,7 @@ class FilmInfo extends React.Component {
           "?api_key=623a2eda649fb02dee401196f0a282c9&language=ru"
       );
       this.videoKey = 
-    (await Axios.get( "https://api.themoviedb.org/3/tv/"+this.id+"/videos?api_key=623a2eda649fb02dee401196f0a282c9&language=en")).data.results[0].key
+    (await Axios.get( "https://api.themoviedb.org/3/tv/"+this.id+"/videos?api_key=623a2eda649fb02dee401196f0a282c9&language=en")).data.results 
     
     }
     this.film = this.film.data;
@@ -57,8 +63,8 @@ class FilmInfo extends React.Component {
             key={i}
             className="fa fa-star"
             aria-hidden="true"
-            style={{ color: "#ffda00" }}
-          ></i>
+            style={{color: "#ffda00"}}
+            />
         );
       }
       for (let i = 0; i < 10 - rate; ++i) {
@@ -67,23 +73,25 @@ class FilmInfo extends React.Component {
             key={rate + i}
             className="fa fa-star-o"
             aria-hidden="true"
-            style={{ color: "white" }}
-          ></i>
+            style={{color: "white"}}
+            />
         );
       }
     }
     return (
       <div className={classes.FilmInfo}>
         {this.state.film ? (
+          <div className={classes.BlackBackground}>
           <div className={classes.Page}>
             <div className={classes.Image}>
               <img
-                style={{ border: "2px solid yellow" }}
-                src={
-                  "https://image.tmdb.org/t/p/w200" +
-                  this.state.film.poster_path
-                }
-              ></img>
+                  style={{border: "2px solid yellow"}}
+                  src={
+                    "https://image.tmdb.org/t/p/w200" +
+                    this.state.film.poster_path
+                  }
+                  alt = "poster"
+                  />
             </div>
             <div className={classes.TextInfo}>
               <div className={classes.Title}>
@@ -108,18 +116,29 @@ class FilmInfo extends React.Component {
                   </div>
                 ) : null}
               </div>
-              <iframe 
-                style = {{border: "2px solid yellow", 'margin-top': "20px"}}
-                width="560"
-                height="315"
-                src={"https://www.youtube.com/embed/" + this.state.videoKey}
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              ></iframe>
-            </div>
+              {(this.state.videoKey[0]) ? (
+              <iframe
+                    title={this.id}
+                    style = {{border: "2px solid yellow", 'marginTop': "20px"}}
+                    width="560"
+                    height="315"
+                    src={"https://www.youtube.com/embed/" + this.state.videoKey[0].key}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    />)
+                : null}
+              
+           </div>
+            
+            
           </div>
+          <SliderAuto movie_id={this.id} isMovie = {this.isMovie} className={classes.SliderAuto}/>
+          </div>
+          
         ) : null}
+
+
       </div>
     );
   }

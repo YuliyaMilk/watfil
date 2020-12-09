@@ -54,7 +54,7 @@ class App extends React.Component{
         <Route path = "/films" component = {Films}/>
         <Route path = "/serials" component = {Serials}/>
         <Route path = "/favorite" component = {Favorite}/>
-        <Route path = "/:id" component = {FilmInfo} />
+        <Route path = "/filminfo/:id" component = {FilmInfo} />
         <Redirect to = "/films"/>
       </Switch>)
     }
