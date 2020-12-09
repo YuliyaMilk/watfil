@@ -21,6 +21,21 @@
   width: 25%;
 }
 
+.Season {
+  margin: 25px auto 0;
+}
+
+.TitleSeason {
+  margin-bottom: 5px;
+}
+
+.Text {
+  margin-top: 35px;
+  font-size: 2.4em;
+  margin-bottom: 6px;
+}
+
+
 .TextInfo {
   width: 75%;
   display: flex;
@@ -45,7 +60,7 @@
   text-align: center;
   padding: 8px 10px 5px;
   transition: all 0.7s ease;
-  margin-right: 20px;
+  margin-right: 40px;
 }
 
 .AddFavorite:hover {
@@ -80,6 +95,12 @@
 .Release {
   margin-top: 15px;
   font-size: 1.1em;
+}
+
+.Seasons {
+  display: flex;
+  width: 95%;
+  margin: auto;
 }
 
 .SliderAuto {

@@ -2,15 +2,18 @@ import classes from "./FilmInfo.module.css";
 import React from "react";
 import Axios from "axios";
 import SliderAuto from "../../components/slider/SliderAuto";
+import Slider from "react-slick";
 
 class FilmInfo extends React.Component {
   film = null;
   videoKey = null;
+  seasons = [];
   state = {
     film: null,
     videoKey: null,
     favorites: [],
-    favorite: false
+    favorite: false,
+    seasons: []
   };
 
   _isMounted = false;
@@ -75,6 +78,12 @@ class FilmInfo extends React.Component {
           this.id +
           "?api_key=623a2eda649fb02dee401196f0a282c9&language=ru"
       );
+
+      this._isMounted &&
+      this.setState({
+        seasons: this.film.data.seasons,
+      });
+      
       this.videoKey = 
     (await Axios.get( "https://api.themoviedb.org/3/tv/"+this.id+"/videos?api_key=623a2eda649fb02dee401196f0a282c9&language=en")).data.results 
     
@@ -93,6 +102,7 @@ class FilmInfo extends React.Component {
       fav = JSON.parse(fav.data);
       if (fav.status === "success") {
         let curFav = [];
+        // eslint-disable-next-line array-callback-return
         fav.data.map((item) => {
           if (
             item.user_primary === localStorage.getItem("email") &&
@@ -114,6 +124,15 @@ class FilmInfo extends React.Component {
   }
 
   render() {
+    const settings = {
+      dots: true,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 6,
+      slidesToScroll: 3
+    };
+
+
     let rating = [];
     if (this.state.film) {
       let rate = parseInt(this.state.film.vote_average);
@@ -201,9 +220,37 @@ class FilmInfo extends React.Component {
                 : null}
               
            </div>
-            
-            
+                
+        
           </div>
+          {(this.isMovie || !this.state.seasons) ? (<div/>) : (<div className={classes.Text}>Сезоны</div>)}
+          {(this.isMovie || !this.state.seasons) ? (<div/>) : (
+            
+            <Slider {...settings} className={classes.Seasons}>
+                {this.state.seasons.map((season, index) => {
+                  return(
+                    <div className={classes.Season}  key={index}>
+                       <div className={classes.TitleSeason}>
+                          {season.name}
+                       </div>
+                    
+                      <div className={classes.Image}>
+                        <img
+                            style={{border: "2px solid yellow"}}
+                            src={
+                              "https://image.tmdb.org/t/p/w200" +
+                              season.poster_path
+                            }
+                            alt = "poster_season"
+                            />
+                      </div>
+                      </div>
+                  );
+                })}
+            </Slider>
+          )
+          
+          }  
           <SliderAuto movie_id={this.id} isMovie = {this.isMovie} className={classes.SliderAuto}/>
           </div>
           
