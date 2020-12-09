@@ -1,71 +1,90 @@
 .FilmInfo {
-    margin-top: 28px;
-    width: 90%;
-    height: 100%;
-    background: black;
-    margin-left: auto;
-    margin-right: auto;
-    color: white;
-    min-height: 720px;
+  margin-top: 28px;
+  width: 90%;
+  height: 100%;
+  background: black;
+  margin-left: auto;
+  margin-right: auto;
+  color: white;
+  min-height: 720px;
 }
 
 .Page {
-    display: flex;
-    justify-content: flex-start;
-    
-    height: 100%;
-    padding-top: 50px;
+  display: flex;
+  justify-content: flex-start;
+
+  height: 100%;
+  padding-top: 50px;
 }
 
 .Image {
-    width: 25%;
+  width: 25%;
 }
 
 .TextInfo {
-    width: 75%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    text-align: left;
+  width: 75%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .Title {
-    font-size: 2.6em;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 2.6em;
+}
+
+.AddFavorite {
+  color: white;
+  font-size: 0.6em;
+  cursor: pointer;
+  border: 2px solid #ffda00;
+  border-radius: 5px;
+  text-align: center;
+  padding: 8px 10px 5px;
+  transition: all 0.7s ease;
+  margin-right: 20px;
+}
+
+.AddFavorite:hover {
+  background: #ffda00;
+  color: black;
 }
 
 .Rating {
-    margin-top: 15px;
-    font-size: 1.5em;
-    display: flex;
-    justify-content: space-around; 
-    width: 40%;
+  margin-top: 15px;
+  font-size: 1.5em;
+  display: flex;
+  justify-content: space-around;
+  width: 40%;
 }
 
 .Description {
-    margin-top: 25px;
-    width: 80%;
-    font-size: 0.9em;
+  margin-top: 25px;
+  width: 80%;
+  font-size: 0.9em;
 }
 
 .Status {
-   margin-top: 15px;
-   font-size: 1.1em;
+  margin-top: 15px;
+  font-size: 1.1em;
 }
 
 .Tagline {
-    margin-top: 15px;
-    font-size: 1.1em;
- }
+  margin-top: 15px;
+  font-size: 1.1em;
+}
 
- .Release {
-    margin-top: 15px;
-    font-size: 1.1em;
- }
+.Release {
+  margin-top: 15px;
+  font-size: 1.1em;
+}
 
- .SliderAuto {
-     
- }
+.SliderAuto {
+}
 
- .BlackBackground {
-     background: black;
- }
+.BlackBackground {
+  background: black;
+}

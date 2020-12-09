@@ -8,19 +8,57 @@ class FilmInfo extends React.Component {
   videoKey = null;
   state = {
     film: null,
-    videoKey: null
+    videoKey: null,
+    favorites: [],
+    favorite: false
   };
 
   _isMounted = false;
+
+  addFavorite = async (favoriteId, isFav, isMovie) => {
+    if (isFav) {
+      let response = await Axios.post(
+        "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/addfavorite",
+        {
+          email: localStorage.getItem("email"),
+          movie_id: favoriteId,
+          movie: isMovie,
+        }
+      );
+      response = JSON.parse(response.data);
+      if (response.status === "success") {
+        this.setState({
+          favorites: [...this.state.favorites, favoriteId],
+          favorite: true,
+        });
+      }
+    } else {
+      let response = await Axios.post(
+        "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/deletefavorite",
+        {
+          email: localStorage.getItem("email"),
+          movie_id: favoriteId,
+          movie: isMovie,
+        }
+      );
+      response = JSON.parse(response.data);
+      if (response.status === "success") {
+        let newFav = this.state.favorites.slice();
+        newFav.splice(this.state.favorites.indexOf(favoriteId), 1);
+        this.setState({
+          favorites: newFav,
+          favorite: false,
+        });
+      }
+    }
+  };
+  
 
   async componentDidMount() {
     this._isMounted = true;
     if(this.props.location.state) {
       this.id = this.props.location.state.id;
       this.isMovie = this.props.location.state.isMovie;
-    }else{
-      this.id = this.props.location.pathname.slice(10);
-      this.isMovie = true;
     }
     if (this.isMovie) {
       this.film = await Axios.get(
@@ -47,6 +85,28 @@ class FilmInfo extends React.Component {
         film: this.film,
         videoKey: this.videoKey
       });
+
+
+      let fav = await Axios.get(
+        "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/fetchfavorites"
+      );
+      fav = JSON.parse(fav.data);
+      if (fav.status === "success") {
+        let curFav = [];
+        fav.data.map((item) => {
+          if (
+            item.user_primary === localStorage.getItem("email") &&
+            item.movie
+          ) {
+            curFav.push(parseInt(item.movie_id));
+          }
+        });
+        this._isMounted &&  this.setState({
+          favorites: [...this.state.favorites, ...curFav],
+          favorite: [...this.state.favorites, ...curFav].indexOf(this.id) !== -1,
+        });
+      }
+
   }
 
   componentWillUnmount() {
@@ -96,6 +156,17 @@ class FilmInfo extends React.Component {
             <div className={classes.TextInfo}>
               <div className={classes.Title}>
                 {this.isMovie ? this.state.film.title : this.state.film.name}
+                <div onClick = {() => {
+                    this.addFavorite(this.id, !this.state.favorite, this.isMovie)
+                  }
+                  }>
+                  {!this.state.favorite ? (
+                    <div className={classes.AddFavorite}> В избранное </div>
+                  ) : (
+                    <div className={classes.AddFavorite} style = {{'color': 'black' , 'background': '#ffda00'}}> В избранном </div>
+                  )}
+                </div>
+                
               </div>
               <div className={classes.Rating}>
                 {rating.map((rate) => {

@@ -2,14 +2,28 @@ import classes from "./Favorite.module.css";
 import React from "react";
 import Axios from "axios";
 import Card from "../../components/UI/Card/Card";
+import Filter from "../../components/filter/Filter";
 
 class Favorite extends React.Component {
 
   state = {
-    cards: []
+    cards: [],
+    filter: null
   }
 
   _isMounted = false;
+
+  addMovie = async (type) => {
+    this._isMounted &&  this.setState({
+      filter: type,
+    });
+  };
+
+  deleteMovie = async () => {
+    this._isMounted &&  this.setState({
+      filter: null,
+    });
+  };
 
   deleteFavorite = async(favoriteId, isMovie) => {
     let response = await Axios.post(
@@ -71,8 +85,22 @@ class Favorite extends React.Component {
 
   render() {
     return (
+      
+      <div className={classes.FavoritePage}>
+        <div className={classes.Filters}>
+         <Filter
+           type="Favorite"
+           filter={this.state.filter}
+           addMovie={this.addMovie}
+           deleteMovie={this.deleteMovie}
+         />
+       </div>
+        
         <div className={classes.Favorite}>
+
           {this.state.cards.map(card => {
+            let isMovie = card.title ? 1 : 0;
+            if(this.state.filter === null || this.state.filter === isMovie )
             return <Card 
               style = {{'width': '30%'}}
               titleFont = '1.3em'
@@ -88,7 +116,9 @@ class Favorite extends React.Component {
                 "https://image.tmdb.org/t/p/w500" + card.poster_path
             }/>;
           }) }
+         
         </div>
+</div>
     );
   }
 }

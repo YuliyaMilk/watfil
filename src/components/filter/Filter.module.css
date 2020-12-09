@@ -11,9 +11,10 @@
 }
 
 .Title {
+  display: block;
   font-size: 2em;
   margin-top: 10px;
-  height: 10%;
+  height: 2em;
 }
 
 .Tags {

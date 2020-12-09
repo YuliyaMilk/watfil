@@ -3,6 +3,16 @@ import classes from "./Filter.module.css";
 
 class Filter extends React.Component {
   render() {
+    const movie = [
+      {
+        id: 1,
+        name: "фильм",
+      },
+      {
+        id: 0,
+        name: "сериал",
+      }
+    ]
     const genres = [
       {
         id: 28,
@@ -85,7 +95,7 @@ class Filter extends React.Component {
       <div className={classes.Filter}>
         <div className={classes.Title}>Фильтр</div>
         <div className={classes.Tags}>
-          {genres.map((genre) => {
+          {(this.props.type === "genres") ? genres.map((genre) => {
             const isChecked = this.props.genres.indexOf(genre.id) !== -1;
             return (
               <div className={classes.OneFilterBox} key = {genre.id}>
@@ -100,7 +110,27 @@ class Filter extends React.Component {
                 />
               </div>
             );
-          })}
+          }) : 
+              movie.map((movie) => {
+                const isChecked = this.props.filter === movie.id;
+                return (
+                  <div className={classes.OneFilterBox} key = {movie.id}>
+                    {movie.name}
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={
+                        isChecked
+                          ? () => this.props.deleteMovie(movie.id)
+                          : () => this.props.addMovie(movie.id)
+                      }
+                    />
+                  </div>
+                );
+              })
+          
+          
+          }
         </div>
       </div>
     );

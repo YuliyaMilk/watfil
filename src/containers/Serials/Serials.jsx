@@ -137,6 +137,7 @@ class Serials extends React.Component {
         </div>
         <div className={classes.Filters}>
           <Filter
+            type="genres"
             genres={this.state.genres}
             addGenre={this.addGenre}
             deleteGenre={this.deleteGenre}

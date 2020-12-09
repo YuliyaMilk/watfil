@@ -14,7 +14,7 @@ class Films extends React.Component {
   _isMounted = false;
 
   addGenre = async (id) => {
-    this._isMounted && await this.setState({
+    this._isMounted &&  this.setState({
       genres: [...this.state.genres, id],
     });
   };
@@ -22,7 +22,7 @@ class Films extends React.Component {
   deleteGenre = async (id) => {
     let newGenres = this.state.genres.slice();
     newGenres.splice(this.state.genres.indexOf(id), 1);
-    this._isMounted && await this.setState({
+    this._isMounted &&  this.setState({
       genres: newGenres,
     });
   };
@@ -133,6 +133,7 @@ class Films extends React.Component {
         </div>
         <div className={classes.Filters}>
           <Filter
+            type="genres"
             genres={this.state.genres}
             addGenre={this.addGenre}
             deleteGenre={this.deleteGenre}
