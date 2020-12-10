@@ -2,6 +2,7 @@ import classes from "./Serials.module.css";
 import React from "react";
 import Card from "../../components/UI/Card/Card";
 import Filter from "../../components/filter/Filter";
+import Loader from "../../components/loader/Loader";
 import Axios from "axios";
 
 class Serials extends React.Component {
@@ -9,6 +10,7 @@ class Serials extends React.Component {
     serials: [],
     genres: [],
     favorites: [],
+    _loading: false,
   };
 
   _isMounted = false;
@@ -31,14 +33,16 @@ class Serials extends React.Component {
 
   addFavorite = async (favoriteId, isFav) => {
     if (isFav) {
-      let response = this._isMounted && await Axios.post(
-        "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/addfavorite",
-        {
-          email: localStorage.getItem("email"),
-          movie_id: favoriteId,
-          movie: false,
-        }
-      );
+      let response =
+        this._isMounted &&
+        (await Axios.post(
+          "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/addfavorite",
+          {
+            email: localStorage.getItem("email"),
+            movie_id: favoriteId,
+            movie: false,
+          }
+        ));
       response = JSON.parse(response.data);
       if (response.status === "success") {
         this.setState({
@@ -46,27 +50,33 @@ class Serials extends React.Component {
         });
       }
     } else {
-      let response = this._isMounted && await Axios.post(
-        "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/deletefavorite",
-        {
-          email: localStorage.getItem("email"),
-          movie_id: favoriteId,
-          movie: false,
-        }
-      );
+      let response =
+        this._isMounted &&
+        (await Axios.post(
+          "https://km0lr02nsg.execute-api.us-east-1.amazonaws.com/user/deletefavorite",
+          {
+            email: localStorage.getItem("email"),
+            movie_id: favoriteId,
+            movie: false,
+          }
+        ));
       response = JSON.parse(response.data);
       if (response.status === "success") {
         let newFav = this.state.favorites.slice();
         newFav.splice(this.state.favorites.indexOf(favoriteId), 1);
-        this._isMounted && this.setState({
-          favorites: newFav,
-        });
+        this._isMounted &&
+          this.setState({
+            favorites: newFav,
+          });
       }
     }
   };
 
   async componentDidMount() {
     this._isMounted = true;
+    this._isMounted && this.setState({
+      _loading: true,
+    });
     if (this._isMounted) {
       for (let i of [1, 2, 3]) {
         const res = (
@@ -75,9 +85,10 @@ class Serials extends React.Component {
               i
           )
         ).data.results;
-        this._isMounted && this.setState({
-          serials: [...this.state.serials, ...res],
-        });
+        this._isMounted &&
+          this.setState({
+            serials: [...this.state.serials, ...res],
+          });
       }
 
       let fav = await Axios.get(
@@ -94,11 +105,15 @@ class Serials extends React.Component {
             curFav.push(parseInt(item.movie_id));
           }
         });
-        this._isMounted && this.setState({
-          favorites: [...this.state.favorites, ...curFav],
-        });
+        this._isMounted &&
+          this.setState({
+            favorites: [...this.state.favorites, ...curFav],
+          });
       }
     }
+    this._isMounted && this.setState({
+      _loading: false,
+    });
   }
 
   componentWillUnmount() {
@@ -108,40 +123,47 @@ class Serials extends React.Component {
   render() {
     return (
       <div className={classes.Serials}>
-        <div className={classes.SerialsCard}>
-          {this.state.serials.map((serial) => {
-            let isGood = true;
-            for (const genre of this.state.genres) {
-              if (serial.genre_ids.indexOf(genre) === -1) {
-                isGood = false;
-                break;
-              }
-            }
-            if (isGood) {
-              return (
-                <Card
-                  key={serial.id}
-                  id={serial.id}
-                  title={serial.name}
-                  isMovie={false}
-                  overview={serial.overview}
-                  favorite={this.state.favorites.indexOf(serial.id) !== -1}
-                  poster={
-                    "https://image.tmdb.org/t/p/w500" + serial.poster_path
+        {this.state._loading ? (
+          <Loader />
+        ) : (
+          <>
+            <div className={classes.SerialsCard}>
+              {this.state.serials.map((serial) => {
+                let isGood = true;
+                for (const genre of this.state.genres) {
+                  if (serial.genre_ids.indexOf(genre) === -1) {
+                    isGood = false;
+                    break;
                   }
-                  addFavorite={this.addFavorite}
-                />
-              );
-            }
-          })}
-        </div>
-        <div className={classes.Filters}>
-          <Filter
-            genres={this.state.genres}
-            addGenre={this.addGenre}
-            deleteGenre={this.deleteGenre}
-          />
-        </div>
+                }
+                if (isGood) {
+                  return (
+                    <Card
+                      key={serial.id}
+                      id={serial.id}
+                      title={serial.name}
+                      isMovie={false}
+                      overview={serial.overview}
+                      favorite={this.state.favorites.indexOf(serial.id) !== -1}
+                      poster={
+                        "https://image.tmdb.org/t/p/w500" + serial.poster_path
+                      }
+                      addFavorite={this.addFavorite}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className={classes.Filters}>
+              <Filter
+                type="genres"
+                genres={this.state.genres}
+                addGenre={this.addGenre}
+                deleteGenre={this.deleteGenre}
+              />
+            </div>
+          </>
+        )}
       </div>
     );
   }

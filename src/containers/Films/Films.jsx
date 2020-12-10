@@ -2,6 +2,7 @@ import classes from "./Films.module.css";
 import React from "react";
 import Card from "../../components/UI/Card/Card";
 import Filter from "../../components/filter/Filter";
+import Loader from "../../components/loader/Loader";
 import Axios from "axios";
 // key = 623a2eda649fb02dee401196f0a282c9
 class Films extends React.Component {
@@ -9,12 +10,13 @@ class Films extends React.Component {
     films: [],
     genres: [],
     favorites: [],
+    _loading: false
   };
 
   _isMounted = false;
 
   addGenre = async (id) => {
-    this._isMounted && await this.setState({
+    this._isMounted &&  this.setState({
       genres: [...this.state.genres, id],
     });
   };
@@ -22,7 +24,7 @@ class Films extends React.Component {
   deleteGenre = async (id) => {
     let newGenres = this.state.genres.slice();
     newGenres.splice(this.state.genres.indexOf(id), 1);
-    this._isMounted && await this.setState({
+    this._isMounted &&  this.setState({
       genres: newGenres,
     });
   };
@@ -64,7 +66,11 @@ class Films extends React.Component {
   };
 
   async componentDidMount() {
+
     this._isMounted = true;
+    this._isMounted && this.setState({
+      _loading: true
+    })
     if (this._isMounted) {
       for (let i of [1, 2, 3]) {
         const res = (
@@ -97,6 +103,9 @@ class Films extends React.Component {
         });
       }
     }
+    this._isMounted && this.setState({
+      _loading: false
+    })
   }
 
   componentWillUnmount() {
@@ -106,6 +115,8 @@ class Films extends React.Component {
   render() {
     return (
       <div className={classes.Films}>
+        {this.state._loading ? <Loader/> : 
+        <>
         <div className={classes.FilmCards}>
           {this.state.films.map((film) => {
             let isGood = true;
@@ -133,11 +144,14 @@ class Films extends React.Component {
         </div>
         <div className={classes.Filters}>
           <Filter
+            type="genres"
             genres={this.state.genres}
             addGenre={this.addGenre}
             deleteGenre={this.deleteGenre}
           />
         </div>
+        </>
+        }
       </div>
     );
   }
